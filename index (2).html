@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>a little question</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #F1E4CC;
+    --paper-dark: #E4D3AC;
+    --ink: #2B2A26;
+    --rose: #C8494F;
+    --rose-dark: #A83A40;
+    --sage: #7C8A5A;
+    --tape: #D9C79A;
+    --cream-card: #FBF6E9;
+    --shadow: rgba(43,42,38,0.25);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(255,255,255,0.05), transparent 40%),
+      repeating-linear-gradient(45deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 2px, transparent 2px, transparent 6px),
+      var(--paper);
+    font-family: 'Work Sans', sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  .board {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .layer {
+    display: none;
+    width: 100%;
+    max-width: 480px;
+    animation: floatIn 0.6s ease;
+  }
+  .layer.active { display: block; }
+
+  @keyframes floatIn {
+    from { opacity: 0; transform: translateY(18px) rotate(-0.5deg); }
+    to { opacity: 1; transform: translateY(0) rotate(0deg); }
+  }
+
+  .postcard {
+    position: relative;
+    background: var(--cream-card);
+    border-radius: 4px;
+    padding: 40px 32px 34px;
+    box-shadow: 0 18px 40px var(--shadow), 0 2px 0 rgba(0,0,0,0.05);
+    transform: rotate(-0.6deg);
+  }
+
+  /* washi tape corners */
+  .tape {
+    position: absolute;
+    width: 90px;
+    height: 30px;
+    background: var(--tape);
+    opacity: 0.85;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  }
+  .tape.tl { top: -14px; left: -18px; transform: rotate(-40deg); }
+  .tape.tr { top: -14px; right: -18px; transform: rotate(40deg); }
+
+  .eyebrow {
+    font-family: 'Work Sans', sans-serif;
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--sage);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  h1.question {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: clamp(34px, 8vw, 46px);
+    line-height: 1.15;
+    margin: 0 0 22px;
+    color: var(--rose-dark);
+  }
+
+  h2.subquestion {
+    font-family: 'Caveat', cursive;
+    font-weight: 700;
+    font-size: clamp(28px, 7vw, 36px);
+    margin: 0 0 20px;
+    color: var(--rose-dark);
+  }
+
+  p.note {
+    font-size: 14px;
+    color: #5c5a52;
+    line-height: 1.5;
+    margin: 0 0 20px;
+  }
+
+  /* Layer 1 buttons */
+  .yn-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    position: relative;
+    min-height: 60px;
+  }
+
+  button {
+    font-family: 'Work Sans', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    border: none;
+    border-radius: 999px;
+    padding: 14px 30px;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.3s ease;
+  }
+  button:focus-visible {
+    outline: 3px solid var(--sage);
+    outline-offset: 2px;
+  }
+
+  #yesBtn {
+    background: var(--rose);
+    color: #FBF6E9;
+    box-shadow: 0 6px 0 var(--rose-dark);
+  }
+  #yesBtn:hover { transform: translateY(-2px); }
+  #yesBtn:active { transform: translateY(2px); box-shadow: 0 3px 0 var(--rose-dark); }
+
+  #noBtn {
+    background: transparent;
+    color: #86847a;
+    border: 2px solid #cfc6ac;
+    transition: transform 0.25s ease, opacity 0.3s ease, font-size 0.25s ease, padding 0.25s ease;
+  }
+
+  .hint {
+    font-family: 'Caveat', cursive;
+    font-size: 20px;
+    color: var(--sage);
+    margin-top: 16px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+  }
+  .hint.show { opacity: 1; }
+
+  /* Calendar */
+  .cal-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 22px;
+  }
+  .cal-label {
+    font-size: 11px;
+    text-align: center;
+    color: #8a8776;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+  .day-chip {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1.5px solid #d8cfb4;
+    background: #fffdf7;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--ink);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    padding: 0;
+  }
+  .day-chip:hover { border-color: var(--rose); }
+  .day-chip.blank { visibility: hidden; cursor: default; }
+  .day-chip.selected {
+    background: var(--rose);
+    color: #fff;
+    border-color: var(--rose-dark);
+    transform: scale(1.05);
+  }
+
+  .full-btn {
+    width: 100%;
+    background: var(--rose);
+    color: #FBF6E9;
+    box-shadow: 0 6px 0 var(--rose-dark);
+    margin-top: 4px;
+  }
+  .full-btn:disabled {
+    background: #d8cfb4;
+    box-shadow: 0 6px 0 #c2b992;
+    color: #948e78;
+    cursor: not-allowed;
+  }
+  .full-btn:not(:disabled):hover { transform: translateY(-2px); }
+  .full-btn:not(:disabled):active { transform: translateY(2px); box-shadow: 0 3px 0 var(--rose-dark); }
+
+  /* Layer 3 - plan cards */
+  .plan-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .plan-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+    background: #fffdf7;
+    border: 1.5px solid #d8cfb4;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-family: 'Work Sans', sans-serif;
+  }
+  .plan-card:hover { border-color: var(--rose); }
+  .plan-card.selected { border-color: var(--rose); background: #fbeee7; }
+  .plan-emoji { font-size: 26px; }
+  .plan-text { display: flex; flex-direction: column; gap: 2px; }
+  .plan-title { font-weight: 600; font-size: 15px; }
+  .plan-sub { font-size: 12.5px; color: #85826f; }
+
+  .loc-row { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+
+  /* Final layer */
+  .final-emoji { font-size: 48px; text-align: center; margin-bottom: 10px; }
+  .summary-box {
+    background: #fffdf7;
+    border: 1.5px dashed #d8cfb4;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 13.5px;
+    color: #5c5a52;
+    line-height: 1.7;
+    margin: 18px 0;
+    white-space: pre-line;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #85826f;
+    text-decoration: underline;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .layer, #noBtn { animation: none !important; transition: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="board">
+
+  <!-- LAYER 1 -->
+  <div class="layer active" id="layer1">
+    <div class="postcard">
+      <div class="tape tl"></div>
+      <div class="tape tr"></div>
+      <div class="eyebrow">Hallooo Mai Hiền bất ngờ ko =)))</div>
+      <h1 class="question">Will you go on a date with me? 🥺</h1>
+      <div class="yn-row">
+        <button id="yesBtn" onclick="goYes()">Yes!</button>
+        <button id="noBtn" onclick="clickNo()">No</button>
+      </div>
+      <div class="hint" id="noHint">the "No" button doesn't seem too sure of itself...</div>
+    </div>
+  </div>
+
+  <!-- LAYER 2: SCHEDULE -->
+  <div class="layer" id="layer2">
+    <div class="postcard">
+      <div class="tape tl"></div>
+      <div class="tape tr"></div>
+      <div class="eyebrow">Step one</div>
+      <h2 class="subquestion">When are you free this July?</h2>
+      <p class="note">Tap every day that could work — pick as many as you like.</p>
+      <div class="cal-grid" id="calGrid"></div>
+      <button class="full-btn" id="confirmDates" disabled onclick="goLayer3()">Confirm dates</button>
+    </div>
+  </div>
+
+  <!-- LAYER 3: PLAN CHOICE -->
+  <div class="layer" id="layer3">
+    <div class="postcard">
+      <div class="tape tl"></div>
+      <div class="tape tr"></div>
+      <div class="eyebrow">Step two</div>
+      <h2 class="subquestion">I have a few plans in mind...</h2>
+      <p class="note">Which one sounds best to you?</p>
+      <div class="plan-cards" id="planCards">
+        <button class="plan-card" data-plan="cinema" onclick="pickPlan(this,'Cinema')">
+          <span class="plan-emoji">🎬</span>
+          <span class="plan-text"><span class="plan-title">Catch a movie</span><span class="plan-sub">Cinema date, popcorn included</span></span>
+        </button>
+        <button class="plan-card" data-plan="mall" onclick="pickPlan(this,'Shopping mall')">
+          <span class="plan-emoji">🛍️</span>
+          <span class="plan-text"><span class="plan-title">Wander the mall</span><span class="plan-sub">Shopping, snacks, people-watching</span></span>
+        </button>
+        <button class="plan-card" data-plan="both" onclick="pickPlan(this,'Both')">
+          <span class="plan-emoji">✨</span>
+          <span class="plan-text"><span class="plan-title">Both, obviously</span><span class="plan-sub">Why choose?</span></span>
+        </button>
+      </div>
+
+      <div id="locationBlock" style="display:none;">
+        <h2 class="subquestion" style="margin-top:22px;">Where should we go?</h2>
+        <div class="loc-row">
+          <button class="full-btn" style="background:#fffdf7;color:var(--ink);box-shadow:0 4px 0 #d8cfb4;" onclick="pickLocation('Ha Noi center')">Ha Noi center</button>
+          <button class="full-btn" style="background:#fffdf7;color:var(--ink);box-shadow:0 4px 0 #d8cfb4;" onclick="pickLocation('Lotte Mall Tay Ho')">Lotte Mall Tay Ho</button>
+          <button class="full-btn" style="background:#fffdf7;color:var(--ink);box-shadow:0 4px 0 #d8cfb4;" onclick="pickLocation('You decide')">You decide 😊</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LAYER 4: SUMMARY + SEND -->
+  <div class="layer" id="layer4">
+    <div class="postcard">
+      <div class="tape tl"></div>
+      <div class="tape tr"></div>
+      <div class="eyebrow">Last step</div>
+      <h2 class="subquestion">Here's the plan, all wrapped up</h2>
+      <div class="summary-box" id="summaryBox"></div>
+      <button class="full-btn" id="sendBtn" onclick="sendEmail()">Send it to me 💌</button>
+      <p class="note" style="text-align:center; margin-top:14px;">Tapping this sends the answer straight to your inbox — no extra steps needed.</p>
+    </div>
+  </div>
+
+  <!-- LAYER 5: THANK YOU -->
+  <div class="layer" id="layer5">
+    <div class="postcard">
+      <div class="tape tl"></div>
+      <div class="tape tr"></div>
+      <div class="final-emoji">🎉</div>
+      <h2 class="subquestion" style="text-align:center;">Thank you for choosing me!</h2>
+      <p class="note" style="text-align:center;">I can't wait for our date. See you soon 💛</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  const state = { dates: [], plan: '', location: '' };
+  let noClicks = 0;
+
+  function showLayer(id){
+    document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  function goYes(){
+    buildCalendar();
+    showLayer('layer2');
+  }
+
+  function clickNo(){
+    noClicks++;
+    const noBtn = document.getElementById('noBtn');
+    const hint = document.getElementById('noHint');
+    hint.classList.add('show');
+    if (noClicks >= 4) {
+      noBtn.style.opacity = '0';
+      noBtn.style.pointerEvents = 'none';
+      hint.textContent = "guess that's a yes then 🙂";
+    } else {
+      const scale = Math.pow(0.5, noClicks);
+      noBtn.style.transform = `scale(${scale})`;
+      noBtn.style.fontSize = (16 * scale) + 'px';
+      noBtn.style.padding = (14*scale) + 'px ' + (30*scale) + 'px';
+      const hints = [
+        "the \"No\" button doesn't seem too sure of itself...",
+        "it's getting smaller... interesting.",
+        "one more click and it might just vanish."
+      ];
+      hint.textContent = hints[Math.min(noClicks-1, hints.length-1)];
+    }
+  }
+
+  function buildCalendar(){
+    const grid = document.getElementById('calGrid');
+    grid.innerHTML = '';
+    ['S','M','T','W','T','F','S'].forEach(d => {
+      const el = document.createElement('div');
+      el.className = 'cal-label';
+      el.textContent = d;
+      grid.appendChild(el);
+    });
+    const year = 2026, month = 6; // July = index 6
+    const firstDay = new Date(year, month, 1).getDay();
+    const daysInMonth = new Date(year, month + 1, 0).getDate();
+    for (let i = 0; i < firstDay; i++) {
+      const blank = document.createElement('div');
+      blank.className = 'day-chip blank';
+      grid.appendChild(blank);
+    }
+    for (let d = 1; d <= daysInMonth; d++) {
+      const chip = document.createElement('button');
+      chip.className = 'day-chip';
+      chip.type = 'button';
+      chip.textContent = d;
+      chip.onclick = () => toggleDate(d, chip);
+      grid.appendChild(chip);
+    }
+  }
+
+  function toggleDate(d, chip){
+    chip.classList.toggle('selected');
+    if (chip.classList.contains('selected')) {
+      state.dates.push(d);
+    } else {
+      state.dates = state.dates.filter(x => x !== d);
+    }
+    state.dates.sort((a,b)=>a-b);
+    document.getElementById('confirmDates').disabled = state.dates.length === 0;
+  }
+
+  function goLayer3(){
+    showLayer('layer3');
+  }
+
+  function pickPlan(btn, label){
+    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+    btn.classList.add('selected');
+    state.plan = label;
+    document.getElementById('locationBlock').style.display = 'block';
+  }
+
+  function pickLocation(label){
+    state.location = label;
+    buildSummary();
+    showLayer('layer4');
+  }
+
+  function buildSummary(){
+    const dateList = state.dates.length
+      ? state.dates.map(d => `July ${d}, 2026`).join(', ')
+      : 'no dates picked';
+    const summary =
+`Free on: ${dateList}
+Plan: ${state.plan}
+Location: ${state.location}`;
+    document.getElementById('summaryBox').textContent = summary;
+  }
+
+  const FORMSPREE_ENDPOINT = "https://formspree.io/f/xgojbjyn";
+
+  function sendEmail(){
+    const dateList = state.dates.length
+      ? state.dates.map(d => `July ${d}, 2026`).join(', ')
+      : 'no dates picked';
+
+    const sendBtn = document.getElementById('sendBtn');
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending...';
+
+    fetch(FORMSPREE_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        subject: "She said yes! Here's the plan 💌",
+        message:
+`Here's what was decided:
+
+Free on: ${dateList}
+Plan: ${state.plan}
+Location: ${state.location}
+
+Can't wait!`
+      })
+    })
+    .then(res => {
+      if (res.ok) {
+        showLayer('layer5');
+      } else {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Send it to me 💌';
+        alert("Hmm, that didn't go through. Mind trying again?");
+      }
+    })
+    .catch(() => {
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send it to me 💌';
+      alert("Hmm, that didn't go through. Mind trying again?");
+    });
+  }
+</script>
+
+</body>
+</html>
