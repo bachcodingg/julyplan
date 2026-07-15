@@ -3,512 +3,506 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>a little question</title>
+<title>a little question, for Mai Hiền</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --paper: #F1E4CC;
-    --paper-dark: #E4D3AC;
-    --ink: #2B2A26;
+    --paper: #EFE2C6;
+    --ink: #33302A;
+    --ink-soft: #6B665B;
     --rose: #C8494F;
-    --rose-dark: #A83A40;
+    --rose-dark: #A2373C;
     --sage: #7C8A5A;
-    --tape: #D9C79A;
-    --cream-card: #FBF6E9;
-    --shadow: rgba(43,42,38,0.25);
+    --sage-dark: #5F6B44;
+    --tape: #E7D3A2;
+    --card: #FCF8ED;
+    --card-edge: #E9DFC3;
+    --gold: #C9A54E;
+    --shadow: rgba(51,48,42,0.22);
+    --line: #DDD2B4;
   }
-
   * { box-sizing: border-box; }
-
   html, body {
-    margin: 0;
-    padding: 0;
-    min-height: 100%;
+    margin: 0; padding: 0; min-height: 100%;
     background:
-      radial-gradient(circle at 20% 20%, rgba(255,255,255,0.05), transparent 40%),
-      repeating-linear-gradient(45deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 2px, transparent 2px, transparent 6px),
+      radial-gradient(circle at 15% 12%, rgba(255,255,255,0.10), transparent 45%),
+      radial-gradient(circle at 85% 88%, rgba(124,138,90,0.08), transparent 50%),
+      repeating-linear-gradient(45deg, rgba(0,0,0,0.014) 0, rgba(0,0,0,0.014) 2px, transparent 2px, transparent 7px),
       var(--paper);
-    font-family: 'Work Sans', sans-serif;
-    color: var(--ink);
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
+    font-family: 'Work Sans', sans-serif; color: var(--ink);
+    -webkit-font-smoothing: antialiased; overflow-x: hidden;
   }
+  .ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+  .ambient span { position: absolute; bottom: -40px; font-size: 18px; opacity: 0; animation: rise linear infinite; }
+  @keyframes rise { 0%{transform:translateY(0) rotate(0);opacity:0;} 10%{opacity:.5;} 90%{opacity:.4;} 100%{transform:translateY(-108vh) rotate(40deg);opacity:0;} }
 
-  .board {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 24px;
-  }
+  .board { position: relative; z-index: 1; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 28px 20px; }
 
-  .layer {
-    display: none;
-    width: 100%;
-    max-width: 480px;
-    animation: floatIn 0.6s ease;
-  }
-  .layer.active { display: block; }
+  .progress { position: fixed; top: 22px; left: 50%; transform: translateX(-50%); display: flex; gap: 9px; z-index: 5; opacity: 0; transition: opacity .4s ease; }
+  .progress.show { opacity: 1; }
+  .progress .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--card-edge); border: 1.5px solid var(--line); transition: all .3s ease; }
+  .progress .dot.done { background: var(--sage); border-color: var(--sage-dark); }
+  .progress .dot.current { background: var(--rose); border-color: var(--rose-dark); transform: scale(1.35); }
 
-  @keyframes floatIn {
-    from { opacity: 0; transform: translateY(18px) rotate(-0.5deg); }
-    to { opacity: 1; transform: translateY(0) rotate(0deg); }
-  }
+  .layer { display: none; width: 100%; max-width: 470px; }
+  .layer.active { display: block; animation: floatIn .55s cubic-bezier(.2,.7,.3,1); }
+  @keyframes floatIn { from{opacity:0;transform:translateY(20px) rotate(-.6deg);} to{opacity:1;transform:translateY(0) rotate(0);} }
 
-  .postcard {
-    position: relative;
-    background: var(--cream-card);
-    border-radius: 4px;
-    padding: 40px 32px 34px;
-    box-shadow: 0 18px 40px var(--shadow), 0 2px 0 rgba(0,0,0,0.05);
-    transform: rotate(-0.6deg);
-  }
+  .postcard { position: relative; background: var(--card); border-radius: 5px; padding: 42px 34px 36px; box-shadow: 0 20px 44px var(--shadow), 0 2px 0 rgba(0,0,0,0.04); transform: rotate(-0.5deg); border: 1px solid var(--card-edge); }
+  .stamp { position: absolute; top: 18px; right: 20px; width: 46px; height: 54px; border-radius: 3px;
+    background: repeating-linear-gradient(0deg, transparent 0 5px, var(--card) 5px 6px), repeating-linear-gradient(90deg, transparent 0 5px, var(--card) 5px 6px), linear-gradient(135deg, var(--rose), var(--rose-dark));
+    display: flex; align-items: center; justify-content: center; font-size: 20px; transform: rotate(6deg); box-shadow: 0 2px 5px rgba(0,0,0,0.12); opacity: .92; }
+  .tape { position: absolute; width: 92px; height: 28px; background: linear-gradient(120deg, var(--tape), #dcc491); opacity: .82; box-shadow: 0 2px 5px rgba(0,0,0,0.14); }
+  .tape::after { content:''; position:absolute; inset:0; background: repeating-linear-gradient(90deg, rgba(255,255,255,0.14) 0 4px, transparent 4px 9px); }
+  .tape.tl { top: -13px; left: -18px; transform: rotate(-40deg); }
+  .tape.tr { top: -13px; right: -18px; transform: rotate(40deg); }
 
-  /* washi tape corners */
-  .tape {
-    position: absolute;
-    width: 90px;
-    height: 30px;
-    background: var(--tape);
-    opacity: 0.85;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
-  }
-  .tape.tl { top: -14px; left: -18px; transform: rotate(-40deg); }
-  .tape.tr { top: -14px; right: -18px; transform: rotate(40deg); }
+  .eyebrow { font-size: 12px; letter-spacing: .16em; text-transform: uppercase; color: var(--sage-dark); font-weight: 600; margin-bottom: 12px; }
+  .step-label { font-family:'Fraunces',serif; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--gold); font-weight: 600; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+  .step-label::before { content:''; width: 22px; height: 1.5px; background: var(--gold); }
 
-  .eyebrow {
-    font-family: 'Work Sans', sans-serif;
-    font-size: 12px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--sage);
-    font-weight: 600;
-    margin-bottom: 10px;
-  }
+  h1.question { font-family:'Caveat',cursive; font-weight: 700; font-size: clamp(36px,8.5vw,48px); line-height: 1.12; margin: 0 0 8px; color: var(--rose-dark); }
+  h2.subquestion { font-family:'Caveat',cursive; font-weight: 700; font-size: clamp(30px,7.5vw,38px); margin: 0 0 18px; color: var(--rose-dark); }
+  p.note { font-size: 14px; color: var(--ink-soft); line-height: 1.55; margin: 0 0 20px; }
+  .lead { font-family:'Fraunces',serif; font-size: 15px; color: var(--ink-soft); line-height: 1.6; margin: 0 0 24px; font-style: italic; }
 
-  h1.question {
-    font-family: 'Caveat', cursive;
-    font-weight: 700;
-    font-size: clamp(34px, 8vw, 46px);
-    line-height: 1.15;
-    margin: 0 0 22px;
-    color: var(--rose-dark);
-  }
-
-  h2.subquestion {
-    font-family: 'Caveat', cursive;
-    font-weight: 700;
-    font-size: clamp(28px, 7vw, 36px);
-    margin: 0 0 20px;
-    color: var(--rose-dark);
-  }
-
-  p.note {
-    font-size: 14px;
-    color: #5c5a52;
-    line-height: 1.5;
-    margin: 0 0 20px;
-  }
-
-  /* Layer 1 buttons */
-  .yn-row {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-    position: relative;
-    min-height: 60px;
-  }
-
-  button {
-    font-family: 'Work Sans', sans-serif;
-    font-weight: 600;
-    font-size: 16px;
-    border: none;
-    border-radius: 999px;
-    padding: 14px 30px;
-    cursor: pointer;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, opacity 0.3s ease;
-  }
-  button:focus-visible {
-    outline: 3px solid var(--sage);
-    outline-offset: 2px;
-  }
-
-  #yesBtn {
-    background: var(--rose);
-    color: #FBF6E9;
-    box-shadow: 0 6px 0 var(--rose-dark);
-  }
+  .yn-row { display: flex; gap: 14px; align-items: center; position: relative; min-height: 60px; flex-wrap: wrap; }
+  button { font-family:'Work Sans',sans-serif; font-weight: 600; font-size: 16px; border: none; border-radius: 999px; padding: 14px 30px; cursor: pointer; transition: transform .15s ease, box-shadow .15s ease, opacity .3s ease; }
+  button:focus-visible { outline: 3px solid var(--sage); outline-offset: 2px; }
+  #yesBtn { background: var(--rose); color: var(--card); box-shadow: 0 6px 0 var(--rose-dark); }
   #yesBtn:hover { transform: translateY(-2px); }
   #yesBtn:active { transform: translateY(2px); box-shadow: 0 3px 0 var(--rose-dark); }
-
-  #noBtn {
-    background: transparent;
-    color: #86847a;
-    border: 2px solid #cfc6ac;
-    transition: transform 0.25s ease, opacity 0.3s ease, font-size 0.25s ease, padding 0.25s ease;
-  }
-
-  .hint {
-    font-family: 'Caveat', cursive;
-    font-size: 20px;
-    color: var(--sage);
-    margin-top: 16px;
-    opacity: 0;
-    transition: opacity 0.4s ease;
-  }
+  #noBtn { background: transparent; color: #8d8a7f; border: 2px solid #cfc6ac; transition: transform .25s ease, opacity .3s ease, font-size .25s ease, padding .25s ease; }
+  .hint { font-family:'Caveat',cursive; font-size: 21px; color: var(--sage-dark); margin-top: 16px; min-height: 26px; opacity: 0; transition: opacity .4s ease; }
   .hint.show { opacity: 1; }
 
-  /* Calendar */
-  .cal-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
-    margin-bottom: 22px;
-  }
-  .cal-label {
-    font-size: 11px;
-    text-align: center;
-    color: #8a8776;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
-  .day-chip {
-    aspect-ratio: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 8px;
-    border: 1.5px solid #d8cfb4;
-    background: #fffdf7;
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--ink);
-    cursor: pointer;
-    transition: all 0.15s ease;
-    padding: 0;
-  }
-  .day-chip:hover { border-color: var(--rose); }
+  .cal-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+  .cal-title { font-family:'Fraunces',serif; font-weight:600; font-size:16px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-bottom: 8px; }
+  .cal-label { font-size: 11px; text-align: center; color: #8f8b78; font-weight: 600; letter-spacing: .04em; padding-bottom: 2px; }
+  .day-chip { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 9px; border: 1.5px solid var(--line); background: #fffdf6; font-size: 14px; font-weight: 500; color: var(--ink); cursor: pointer; transition: all .14s ease; padding: 0; position: relative; }
+  .day-chip:hover:not(.past) { border-color: var(--rose); transform: translateY(-1px); }
   .day-chip.blank { visibility: hidden; cursor: default; }
-  .day-chip.selected {
-    background: var(--rose);
-    color: #fff;
-    border-color: var(--rose-dark);
-    transform: scale(1.05);
-  }
+  .day-chip.past { color: #c3bba4; cursor: not-allowed; background: #f6f1e3; }
+  .day-chip.today { border-color: var(--gold); box-shadow: inset 0 0 0 1px var(--gold); }
+  .day-chip.selected { background: var(--rose); color: #fff; border-color: var(--rose-dark); transform: scale(1.06); box-shadow: 0 4px 10px rgba(200,73,79,.3); }
+  .day-chip.selected::after { content:''; position:absolute; top:3px; right:4px; width:4px; height:4px; background:#fff; border-radius:50%; }
+  .count-note { font-size: 12.5px; color: var(--ink-soft); text-align:center; margin: 4px 0 18px; min-height: 18px; }
+  .count-note b { color: var(--rose-dark); }
 
-  .full-btn {
-    width: 100%;
-    background: var(--rose);
-    color: #FBF6E9;
-    box-shadow: 0 6px 0 var(--rose-dark);
-    margin-top: 4px;
-  }
-  .full-btn:disabled {
-    background: #d8cfb4;
-    box-shadow: 0 6px 0 #c2b992;
-    color: #948e78;
-    cursor: not-allowed;
-  }
+  .full-btn { width: 100%; background: var(--rose); color: var(--card); box-shadow: 0 6px 0 var(--rose-dark); margin-top: 4px; }
+  .full-btn:disabled { background: #d8cfb4; box-shadow: 0 6px 0 #c2b992; color: #948e78; cursor: not-allowed; }
   .full-btn:not(:disabled):hover { transform: translateY(-2px); }
   .full-btn:not(:disabled):active { transform: translateY(2px); box-shadow: 0 3px 0 var(--rose-dark); }
 
-  /* Layer 3 - plan cards */
-  .plan-cards {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    margin-bottom: 6px;
-  }
-  .plan-card {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    text-align: left;
-    background: #fffdf7;
-    border: 1.5px solid #d8cfb4;
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-family: 'Work Sans', sans-serif;
-  }
-  .plan-card:hover { border-color: var(--rose); }
-  .plan-card.selected { border-color: var(--rose); background: #fbeee7; }
-  .plan-emoji { font-size: 26px; }
-  .plan-text { display: flex; flex-direction: column; gap: 2px; }
-  .plan-title { font-weight: 600; font-size: 15px; }
-  .plan-sub { font-size: 12.5px; color: #85826f; }
+  .time-row { display:flex; gap:9px; margin-top:14px; flex-wrap:wrap; }
+  .time-chip { flex:1 1 auto; min-width: 96px; background:#fffdf6; border:1.5px solid var(--line); border-radius:10px; padding:12px 10px; font-weight:600; font-size:13.5px; color:var(--ink); display:flex; flex-direction:column; align-items:center; gap:3px; }
+  .time-chip .t-emoji { font-size:20px; }
+  .time-chip:hover { border-color:var(--rose); }
+  .time-chip.selected { background:#fbeee7; border-color:var(--rose); }
 
-  .loc-row { display: flex; flex-direction: column; gap: 10px; margin-top: 18px; }
+  .cafe-list { display:flex; flex-direction:column; gap:14px; }
+  .cafe-card { text-align:left; width:100%; background:#fffdf6; border:1.5px solid var(--line); border-radius:14px; overflow:hidden; padding:0; transition: all .16s ease; }
+  .cafe-card:hover { border-color:var(--rose); transform: translateY(-2px); box-shadow:0 8px 18px rgba(0,0,0,0.08); }
+  .cafe-card.selected { border-color:var(--rose); box-shadow:0 8px 20px rgba(200,73,79,.18); }
+  .cafe-photo { width:100%; height:118px; display:block; }
+  .cafe-info { padding:12px 14px 14px; }
+  .cafe-top { display:flex; align-items:baseline; justify-content:space-between; gap:8px; }
+  .cafe-name { font-family:'Fraunces',serif; font-weight:600; font-size:16px; color:var(--ink); line-height:1.2; }
+  .cafe-rating { flex-shrink:0; font-size:12.5px; font-weight:600; color:var(--gold); white-space:nowrap; }
+  .cafe-addr { font-size:12px; color:var(--ink-soft); margin-top:5px; line-height:1.4; display:flex; gap:6px; }
+  .cafe-addr .pin { flex-shrink:0; }
+  .cafe-tag { display:inline-block; margin-top:9px; font-size:11px; font-weight:600; letter-spacing:.03em; color:var(--sage-dark); background:#eef0e4; border-radius:999px; padding:3px 10px; }
+  .cafe-actions { display:flex; align-items:center; gap:10px; margin-top:12px; }
+  .maps-link { font-size:12.5px; font-weight:600; color:var(--rose-dark); text-decoration:none; display:inline-flex; align-items:center; gap:5px; }
+  .maps-link:hover { text-decoration:underline; }
+  .pick-flag { margin-left:auto; font-size:13px; font-weight:600; color:#a49c86; }
+  .cafe-card.selected .pick-flag { color:var(--rose); }
 
-  /* Final layer */
-  .final-emoji { font-size: 48px; text-align: center; margin-bottom: 10px; }
-  .summary-box {
-    background: #fffdf7;
-    border: 1.5px dashed #d8cfb4;
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-size: 13.5px;
-    color: #5c5a52;
-    line-height: 1.7;
-    margin: 18px 0;
-    white-space: pre-line;
-  }
+  .love-note { width:100%; margin-top:14px; border:1.5px dashed var(--line); border-radius:12px; background:#fffdf6; padding:12px 14px; font-family:'Caveat',cursive; font-size:19px; color:var(--ink); resize:none; min-height:70px; line-height:1.4; }
+  .love-note:focus { outline:none; border-color:var(--rose); }
+  .love-note::placeholder { color:#b3ab93; }
 
-  .back-link {
-    display: inline-block;
-    margin-top: 14px;
-    font-size: 13px;
-    color: #85826f;
-    text-decoration: underline;
-    cursor: pointer;
-    background: none;
-    border: none;
-    padding: 0;
-    box-shadow: none;
-  }
+  .ticket { background:#fffdf6; border-radius:12px; overflow:hidden; margin:18px 0; border:1.5px solid var(--card-edge); box-shadow:0 6px 16px rgba(0,0,0,0.06); }
+  .ticket-top { background:linear-gradient(135deg, var(--rose), var(--rose-dark)); color:#fff; padding:14px 18px; }
+  .ticket-top .tt-label { font-size:11px; letter-spacing:.14em; text-transform:uppercase; opacity:.85; }
+  .ticket-top .tt-title { font-family:'Fraunces',serif; font-size:18px; font-weight:600; margin-top:2px; }
+  .ticket-perf { position:relative; height:1px; }
+  .ticket-perf::before { content:''; position:absolute; left:0; right:0; top:0; border-top:2px dashed var(--card-edge); }
+  .ticket-perf .notch { position:absolute; top:-8px; width:16px; height:16px; border-radius:50%; background:var(--card); }
+  .ticket-perf .notch.l { left:-9px; } .ticket-perf .notch.r { right:-9px; }
+  .ticket-body { padding:16px 18px; display:flex; flex-direction:column; gap:11px; }
+  .t-row { display:flex; gap:12px; align-items:flex-start; }
+  .t-row .t-ic { font-size:17px; width:22px; text-align:center; flex-shrink:0; }
+  .t-row .t-k { font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); }
+  .t-row .t-v { font-size:14.5px; font-weight:500; color:var(--ink); margin-top:1px; line-height:1.4; }
 
-  @media (prefers-reduced-motion: reduce) {
-    .layer, #noBtn { animation: none !important; transition: none !important; }
-  }
+  .back-link { display:inline-block; margin-top:14px; font-size:13px; color:var(--ink-soft); text-decoration:underline; cursor:pointer; background:none; border:none; padding:0; box-shadow:none; }
+  .back-link:hover { color: var(--rose-dark); }
+
+  .final-card { text-align:center; }
+  .final-heart { font-size:56px; animation: beat 1.3s ease-in-out infinite; }
+  @keyframes beat { 0%,100%{transform:scale(1);} 15%{transform:scale(1.18);} 30%{transform:scale(1);} 45%{transform:scale(1.12);} }
+  .cal-links { display:flex; flex-direction:column; gap:9px; margin-top:20px; }
+  .cal-add { display:inline-flex; align-items:center; justify-content:center; gap:8px; background:#fffdf6; border:1.5px solid var(--card-edge); border-radius:999px; padding:11px 18px; font-size:13.5px; font-weight:600; color:var(--ink); text-decoration:none; box-shadow:0 3px 0 var(--line); transition:all .15s; }
+  .cal-add:hover { transform:translateY(-2px); border-color:var(--sage); }
+
+  #confetti { position:fixed; inset:0; pointer-events:none; z-index:20; }
+
+  @media (max-width:400px){ .postcard{ padding:36px 24px 30px; } .stamp{ display:none; } }
+  @media (prefers-reduced-motion: reduce) { .layer,#noBtn,.final-heart,.ambient span { animation:none!important; transition:none!important; } }
 </style>
 </head>
 <body>
+
+<div class="ambient" id="ambient"></div>
+<canvas id="confetti"></canvas>
+
+<div class="progress" id="progress">
+  <div class="dot current"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+</div>
 
 <div class="board">
 
   <!-- LAYER 1 -->
   <div class="layer active" id="layer1">
     <div class="postcard">
-      <div class="tape tl"></div>
-      <div class="tape tr"></div>
-      <div class="eyebrow">Hallooo Mai Hiền bất ngờ ko =)))</div>
-      <h1 class="question">Will you go on a date with me? 🥺</h1>
+      <div class="tape tl"></div><div class="tape tr"></div>
+      <div class="stamp">📚</div>
+      <div class="eyebrow">Hallooo Mai Hiền — bất ngờ ko =)))</div>
+      <h1 class="question">Study date<br>with me? 🥺</h1>
+      <p class="lead">Books, coffee, and you across the table. That's the whole plan — I even scouted the cafés.</p>
       <div class="yn-row">
-        <button id="yesBtn" onclick="goYes()">Yes!</button>
+        <button id="yesBtn" onclick="goYes()">Yes! 💛</button>
         <button id="noBtn" onclick="clickNo()">No</button>
       </div>
-      <div class="hint" id="noHint">the "No" button doesn't seem too sure of itself...</div>
+      <div class="hint" id="noHint"></div>
     </div>
   </div>
 
   <!-- LAYER 2: SCHEDULE -->
   <div class="layer" id="layer2">
     <div class="postcard">
-      <div class="tape tl"></div>
-      <div class="tape tr"></div>
-      <div class="eyebrow">Step one</div>
-      <h2 class="subquestion">When are you free this July?</h2>
-      <p class="note">Tap every day that could work — pick as many as you like.</p>
+      <div class="tape tl"></div><div class="tape tr"></div>
+      <div class="step-label">Step 1 of 3</div>
+      <h2 class="subquestion">When are you free?</h2>
+      <p class="note">Tap any days that could work — pick as many as you like.</p>
+      <div class="cal-head"><div class="cal-title" id="calMonth">This month</div></div>
       <div class="cal-grid" id="calGrid"></div>
-      <button class="full-btn" id="confirmDates" disabled onclick="goLayer3()">Confirm dates</button>
+      <div class="count-note" id="countNote">No days picked yet</div>
+
+      <div class="step-label" style="margin-top:8px;">What time suits you?</div>
+      <div class="time-row" id="timeRow">
+        <button class="time-chip" onclick="pickTime(this,'Morning')"><span class="t-emoji">☕</span>Morning</button>
+        <button class="time-chip" onclick="pickTime(this,'Afternoon')"><span class="t-emoji">🌤️</span>Afternoon</button>
+        <button class="time-chip" onclick="pickTime(this,'Evening')"><span class="t-emoji">🌆</span>Evening</button>
+      </div>
+
+      <button class="full-btn" id="confirmDates" disabled onclick="goLayer3()" style="margin-top:18px;">Next →</button>
+      <button class="back-link" onclick="showLayer('layer1')">← back</button>
     </div>
   </div>
 
-  <!-- LAYER 3: PLAN CHOICE -->
+  <!-- LAYER 3: CAFÉ CHOICE -->
   <div class="layer" id="layer3">
     <div class="postcard">
-      <div class="tape tl"></div>
-      <div class="tape tr"></div>
-      <div class="eyebrow">Step two</div>
-      <h2 class="subquestion">I have a few plans in mind...</h2>
-      <p class="note">Which one sounds best to you?</p>
-      <div class="plan-cards" id="planCards">
-        <button class="plan-card" data-plan="cinema" onclick="pickPlan(this,'Cinema')">
-          <span class="plan-emoji">🎬</span>
-          <span class="plan-text"><span class="plan-title">Catch a movie</span><span class="plan-sub">Cinema date, popcorn included</span></span>
-        </button>
-        <button class="plan-card" data-plan="mall" onclick="pickPlan(this,'Shopping mall')">
-          <span class="plan-emoji">🛍️</span>
-          <span class="plan-text"><span class="plan-title">Wander the mall</span><span class="plan-sub">Shopping, snacks, people-watching</span></span>
-        </button>
-        <button class="plan-card" data-plan="both" onclick="pickPlan(this,'Both')">
-          <span class="plan-emoji">✨</span>
-          <span class="plan-text"><span class="plan-title">Both, obviously</span><span class="plan-sub">Why choose?</span></span>
-        </button>
-      </div>
-
-      <div id="locationBlock" style="display:none;">
-        <h2 class="subquestion" style="margin-top:22px;">Where should we go?</h2>
-        <div class="loc-row">
-          <button class="full-btn" style="background:#fffdf7;color:var(--ink);box-shadow:0 4px 0 #d8cfb4;" onclick="pickLocation('Ha Noi center')">Ha Noi center</button>
-          <button class="full-btn" style="background:#fffdf7;color:var(--ink);box-shadow:0 4px 0 #d8cfb4;" onclick="pickLocation('Lotte Mall Tay Ho')">Lotte Mall Tay Ho</button>
-          <button class="full-btn" style="background:#fffdf7;color:var(--ink);box-shadow:0 4px 0 #d8cfb4;" onclick="pickLocation('You decide')">You decide 😊</button>
-        </div>
-      </div>
+      <div class="tape tl"></div><div class="tape tr"></div>
+      <div class="step-label">Step 2 of 3</div>
+      <h2 class="subquestion">Pick our study spot ☕</h2>
+      <p class="note">Four quiet, work-friendly cafés around Hà Nội. Ratings are from Google — tap the one you like.</p>
+      <div class="cafe-list" id="cafeList"></div>
+      <button class="back-link" onclick="showLayer('layer2')">← back</button>
     </div>
   </div>
 
   <!-- LAYER 4: SUMMARY + SEND -->
   <div class="layer" id="layer4">
     <div class="postcard">
-      <div class="tape tl"></div>
-      <div class="tape tr"></div>
-      <div class="eyebrow">Last step</div>
-      <h2 class="subquestion">Here's the plan, all wrapped up</h2>
-      <div class="summary-box" id="summaryBox"></div>
-      <button class="full-btn" id="sendBtn" onclick="sendEmail()">Send it to me 💌</button>
-      <p class="note" style="text-align:center; margin-top:14px;">Tapping this sends the answer straight to your inbox — no extra steps needed.</p>
+      <div class="tape tl"></div><div class="tape tr"></div>
+      <div class="step-label">Step 3 of 3</div>
+      <h2 class="subquestion">Here's our plan 💫</h2>
+      <div class="ticket">
+        <div class="ticket-top">
+          <div class="tt-label">Study Date Pass · Admit Two</div>
+          <div class="tt-title">You & Me</div>
+        </div>
+        <div class="ticket-perf"><span class="notch l"></span><span class="notch r"></span></div>
+        <div class="ticket-body" id="ticketBody"></div>
+      </div>
+      <textarea class="love-note" id="loveNote" maxlength="140" placeholder="Leave me a little note if you like... (optional)"></textarea>
+      <button class="full-btn" id="sendBtn" onclick="sendEmail()" style="margin-top:16px;">Send it to me 💌</button>
+      <p class="note" style="text-align:center; margin-top:12px; font-size:12.5px;">This sends the plan straight to my inbox — that's the whole trick.</p>
+      <button class="back-link" onclick="showLayer('layer3')">← back</button>
     </div>
   </div>
 
   <!-- LAYER 5: THANK YOU -->
   <div class="layer" id="layer5">
-    <div class="postcard">
-      <div class="tape tl"></div>
-      <div class="tape tr"></div>
-      <div class="final-emoji">🎉</div>
-      <h2 class="subquestion" style="text-align:center;">Thank you for choosing me!</h2>
-      <p class="note" style="text-align:center;">I can't wait for our date. See you soon 💛</p>
+    <div class="postcard final-card">
+      <div class="tape tl"></div><div class="tape tr"></div>
+      <div class="final-heart">💛</div>
+      <h2 class="subquestion" style="margin-top:8px;">It's a study date!</h2>
+      <p class="note" id="finalLine" style="font-size:14.5px;">Bring your notes — I'll bring mine. See you soon.</p>
+      <div class="cal-links">
+        <a class="cal-add" id="gcalLink" href="#" target="_blank" rel="noopener">📅 Add to Google Calendar</a>
+        <a class="cal-add" id="mapLink" href="#" target="_blank" rel="noopener">📍 Open the café in Google Maps</a>
+      </div>
     </div>
   </div>
 
 </div>
 
 <script>
-  const state = { dates: [], plan: '', location: '' };
+  const CAFES = [
+    {
+      id:'tiny', name:'Tiny Cafe · Sky Garden', rating:3.9, reviews:358,
+      addr:'19A, Nguyễn Ngọc Vũ / 169 Trung Hòa, Yên Hòa',
+      tag:'Rooftop skyline · open till 2:30am',
+      maps:'https://www.google.com/maps/place/?q=place_id:ChIJS6iOawCrNTERFDlARv0-0Sg',
+      art:`<defs><linearGradient id='g1' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#3b4a6b'/><stop offset='1' stop-color='#b98a63'/></linearGradient></defs>
+        <rect width='300' height='120' fill='url(#g1)'/>
+        <circle cx='245' cy='30' r='13' fill='#f4e2b0' opacity='.85'/>
+        <g fill='#2a3550' opacity='.75'>
+          <rect x='20' y='60' width='22' height='60'/><rect x='48' y='45' width='26' height='75'/>
+          <rect x='80' y='68' width='20' height='52'/><rect x='106' y='52' width='24' height='68'/>
+          <rect x='136' y='72' width='18' height='48'/><rect x='160' y='58' width='26' height='62'/>
+          <rect x='192' y='66' width='20' height='54'/><rect x='218' y='48' width='24' height='72'/>
+          <rect x='248' y='70' width='20' height='50'/><rect x='272' y='60' width='20' height='60'/>
+        </g>
+        <g fill='#f4e2b0' opacity='.9'>
+          <rect x='54' y='55' width='4' height='4'/><rect x='62' y='63' width='4' height='4'/>
+          <rect x='112' y='62' width='4' height='4'/><rect x='168' y='68' width='4' height='4'/>
+          <rect x='224' y='58' width='4' height='4'/><rect x='226' y='70' width='4' height='4'/>
+        </g>
+        <rect x='0' y='104' width='300' height='16' fill='#2a2018' opacity='.5'/>
+        <circle cx='40' cy='100' r='6' fill='#c8494f'/><rect x='60' y='96' width='30' height='8' rx='4' fill='#e7d3a2'/>`
+    },
+    {
+      id:'flow', name:'Flow Haus · Ideation Space', rating:3.8, reviews:178,
+      addr:'54 Lê Văn Lương, Trung Hòa Nhân Chính, Yên Hòa',
+      tag:'Open 24 hours · lots of power outlets',
+      maps:'https://www.google.com/maps/place/?q=place_id:ChIJOSmp_7utNTERu8J6D_J3JQA',
+      art:`<defs><linearGradient id='g2' x1='0' y1='0' x2='1' y2='1'><stop offset='0' stop-color='#e7ddc8'/><stop offset='1' stop-color='#c9b78f'/></linearGradient></defs>
+        <rect width='300' height='120' fill='url(#g2)'/>
+        <rect x='0' y='96' width='300' height='24' fill='#7c8a5a' opacity='.35'/>
+        <g fill='#8a744f'><rect x='30' y='70' width='70' height='8' rx='2'/><rect x='34' y='78' width='6' height='22'/><rect x='90' y='78' width='6' height='22'/></g>
+        <g fill='#8a744f'><rect x='200' y='70' width='70' height='8' rx='2'/><rect x='204' y='78' width='6' height='22'/><rect x='260' y='78' width='6' height='22'/></g>
+        <rect x='52' y='52' width='26' height='18' rx='2' fill='#33302a'/><rect x='55' y='55' width='20' height='12' fill='#9fd0e0'/>
+        <rect x='222' y='52' width='26' height='18' rx='2' fill='#33302a'/><rect x='225' y='55' width='20' height='12' fill='#9fd0e0'/>
+        <circle cx='150' cy='42' r='16' fill='#f0e6cf' stroke='#c9a54e' stroke-width='2'/><path d='M150 34 v8 l6 4' stroke='#a2373c' stroke-width='2' fill='none'/>
+        <g fill='#c8494f'><circle cx='120' cy='30' r='4'/><circle cx='180' cy='28' r='4'/></g>`
+    },
+    {
+      id:'studyik', name:'Study-ik · Books & Coffee', rating:4.5, reviews:227,
+      addr:'3rd floor, 73 Trần Duy Hưng, Trung Hòa Nhân Chính',
+      tag:'Highest rated · library atmosphere',
+      maps:'https://www.google.com/maps/place/?q=place_id:ChIJN2pyKQCtNTERHUcjTmMX4d4',
+      art:`<defs><linearGradient id='g3' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#6b4f3a'/><stop offset='1' stop-color='#4a3626'/></linearGradient></defs>
+        <rect width='300' height='120' fill='url(#g3)'/>
+        <rect x='24' y='18' width='252' height='30' rx='2' fill='#3a2a1c'/>
+        <rect x='24' y='54' width='252' height='30' rx='2' fill='#3a2a1c'/>
+        <g>
+          <rect x='30' y='22' width='9' height='24' fill='#c8494f'/><rect x='41' y='22' width='9' height='24' fill='#7c8a5a'/><rect x='52' y='22' width='9' height='24' fill='#c9a54e'/><rect x='63' y='22' width='9' height='24' fill='#a2373c'/>
+          <rect x='80' y='22' width='9' height='24' fill='#e7d3a2'/><rect x='91' y='22' width='9' height='24' fill='#7c8a5a'/><rect x='102' y='22' width='9' height='24' fill='#c8494f'/>
+          <rect x='130' y='22' width='9' height='24' fill='#c9a54e'/><rect x='141' y='22' width='9' height='24' fill='#a2373c'/><rect x='152' y='22' width='9' height='24' fill='#7c8a5a'/><rect x='163' y='22' width='9' height='24' fill='#e7d3a2'/>
+          <rect x='190' y='22' width='9' height='24' fill='#c8494f'/><rect x='201' y='22' width='9' height='24' fill='#c9a54e'/><rect x='212' y='22' width='9' height='24' fill='#7c8a5a'/><rect x='223' y='22' width='9' height='24' fill='#a2373c'/><rect x='234' y='22' width='9' height='24' fill='#e7d3a2'/>
+          <rect x='36' y='58' width='9' height='24' fill='#7c8a5a'/><rect x='47' y='58' width='9' height='24' fill='#c9a54e'/><rect x='58' y='58' width='9' height='24' fill='#c8494f'/><rect x='69' y='58' width='9' height='24' fill='#e7d3a2'/>
+          <rect x='96' y='58' width='9' height='24' fill='#a2373c'/><rect x='107' y='58' width='9' height='24' fill='#7c8a5a'/><rect x='118' y='58' width='9' height='24' fill='#c9a54e'/>
+          <rect x='150' y='58' width='9' height='24' fill='#c8494f'/><rect x='161' y='58' width='9' height='24' fill='#e7d3a2'/><rect x='172' y='58' width='9' height='24' fill='#7c8a5a'/><rect x='183' y='58' width='9' height='24' fill='#c9a54e'/>
+          <rect x='214' y='58' width='9' height='24' fill='#a2373c'/><rect x='225' y='58' width='9' height='24' fill='#7c8a5a'/><rect x='236' y='58' width='9' height='24' fill='#c8494f'/>
+        </g>
+        <rect x='0' y='96' width='300' height='24' fill='#2a1d12'/>
+        <ellipse cx='210' cy='104' rx='16' ry='5' fill='#1f150c'/>
+        <path d='M120 100 q6 -14 12 0' stroke='#e7d3a2' stroke-width='2' fill='none' opacity='.7'/>`
+    },
+    {
+      id:'focus', name:'Focus Coffee · Tây Hồ', rating:4.8, reviews:33,
+      addr:'130 Vũ Miên, Tây Hồ (by West Lake)',
+      tag:'Lakeside view · calm & bright',
+      maps:'https://www.google.com/maps/place/?q=place_id:ChIJS5gB0nurNTER68wmwQdiZUE',
+      art:`<defs><linearGradient id='g4' x1='0' y1='0' x2='0' y2='1'><stop offset='0' stop-color='#bfe0e6'/><stop offset='.6' stop-color='#8fbcc4'/><stop offset='1' stop-color='#6fa3ad'/></linearGradient></defs>
+        <rect width='300' height='120' fill='url(#g4)'/>
+        <circle cx='250' cy='28' r='14' fill='#fbeecb'/>
+        <path d='M0 78 q40 -18 80 0 t80 0 t80 0 t80 0 V120 H0 Z' fill='#5b8f99' opacity='.6'/>
+        <path d='M0 90 q50 -14 100 0 t100 0 t100 0 V120 H0 Z' fill='#4a7d87' opacity='.7'/>
+        <g fill='#3c5a2f' opacity='.8'>
+          <rect x='36' y='52' width='5' height='26'/><ellipse cx='38' cy='48' rx='14' ry='11'/>
+          <rect x='70' y='58' width='4' height='20'/><ellipse cx='72' cy='55' rx='10' ry='8'/>
+        </g>
+        <g><rect x='150' y='50' width='40' height='6' rx='2' fill='#8a6d4a'/><rect x='154' y='56' width='4' height='22' fill='#8a6d4a'/><rect x='182' y='56' width='4' height='22' fill='#8a6d4a'/>
+          <circle cx='170' cy='44' r='9' fill='#f0e6cf' stroke='#c9a54e' stroke-width='1.5'/></g>
+        <g fill='#fff' opacity='.55'><ellipse cx='120' cy='96' rx='16' ry='3'/><ellipse cx='210' cy='104' rx='20' ry='3'/></g>`
+    }
+  ];
+
+  const state = { dates: [], time: '', cafe: null };
   let noClicks = 0;
 
+  (function(){
+    const box=document.getElementById('ambient');
+    const glyphs=['💛','📖','✿','☕','♡'];
+    for(let i=0;i<11;i++){const s=document.createElement('span');
+      s.textContent=glyphs[i%glyphs.length]; s.style.left=Math.random()*100+'vw';
+      s.style.fontSize=(13+Math.random()*14)+'px';
+      s.style.animationDuration=(13+Math.random()*12)+'s';
+      s.style.animationDelay=(Math.random()*14)+'s'; box.appendChild(s);}
+  })();
+
+  const stepOfLayer={ layer1:0, layer2:1, layer3:2, layer4:3, layer5:4 };
   function showLayer(id){
-    document.querySelectorAll('.layer').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.layer').forEach(l=>l.classList.remove('active'));
     document.getElementById(id).classList.add('active');
+    const prog=document.getElementById('progress'), step=stepOfLayer[id];
+    prog.classList.toggle('show', step>=1 && step<=3);
+    prog.querySelectorAll('.dot').forEach((d,i)=>{ d.classList.remove('done','current');
+      if(i<step-1) d.classList.add('done'); else if(i===step-1) d.classList.add('current'); });
+    window.scrollTo({top:0,behavior:'smooth'});
   }
 
-  function goYes(){
-    buildCalendar();
-    showLayer('layer2');
-  }
+  function goYes(){ buildCalendar(); buildCafes(); showLayer('layer2'); }
 
   function clickNo(){
     noClicks++;
-    const noBtn = document.getElementById('noBtn');
-    const hint = document.getElementById('noHint');
+    const noBtn=document.getElementById('noBtn'), hint=document.getElementById('noHint');
     hint.classList.add('show');
-    if (noClicks >= 4) {
-      noBtn.style.opacity = '0';
-      noBtn.style.pointerEvents = 'none';
-      hint.textContent = "guess that's a yes then 🙂";
-    } else {
-      const scale = Math.pow(0.5, noClicks);
-      noBtn.style.transform = `scale(${scale})`;
-      noBtn.style.fontSize = (16 * scale) + 'px';
-      noBtn.style.padding = (14*scale) + 'px ' + (30*scale) + 'px';
-      const hints = [
-        "the \"No\" button doesn't seem too sure of itself...",
-        "it's getting smaller... interesting.",
-        "one more click and it might just vanish."
-      ];
-      hint.textContent = hints[Math.min(noClicks-1, hints.length-1)];
-    }
+    const hints=["hmm, the \u201cNo\u201d button looks nervous...","it's shrinking. curious.","one more and it might just disappear 👀"];
+    if(noClicks>=4){ noBtn.style.opacity='0'; noBtn.style.pointerEvents='none'; hint.textContent="guess that settles it — it's a yes 🙂"; }
+    else { const s=Math.pow(0.55,noClicks);
+      noBtn.style.transform=`scale(${s}) rotate(${noClicks*6}deg)`;
+      noBtn.style.fontSize=(16*s)+'px'; noBtn.style.padding=(14*s)+'px '+(30*s)+'px';
+      hint.textContent=hints[Math.min(noClicks-1,hints.length-1)]; }
   }
 
+  const MONTH=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  let calYear, calMonth;
   function buildCalendar(){
-    const grid = document.getElementById('calGrid');
-    grid.innerHTML = '';
-    ['S','M','T','W','T','F','S'].forEach(d => {
-      const el = document.createElement('div');
-      el.className = 'cal-label';
-      el.textContent = d;
-      grid.appendChild(el);
-    });
-    const year = 2026, month = 6; // July = index 6
-    const firstDay = new Date(year, month, 1).getDay();
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    for (let i = 0; i < firstDay; i++) {
-      const blank = document.createElement('div');
-      blank.className = 'day-chip blank';
-      grid.appendChild(blank);
-    }
-    for (let d = 1; d <= daysInMonth; d++) {
-      const chip = document.createElement('button');
-      chip.className = 'day-chip';
-      chip.type = 'button';
-      chip.textContent = d;
-      chip.onclick = () => toggleDate(d, chip);
-      grid.appendChild(chip);
+    const now=new Date(); calYear=now.getFullYear(); calMonth=now.getMonth();
+    document.getElementById('calMonth').textContent=MONTH[calMonth]+' '+calYear;
+    const grid=document.getElementById('calGrid'); grid.innerHTML='';
+    ['S','M','T','W','T','F','S'].forEach(d=>{const e=document.createElement('div');e.className='cal-label';e.textContent=d;grid.appendChild(e);});
+    const first=new Date(calYear,calMonth,1).getDay();
+    const days=new Date(calYear,calMonth+1,0).getDate();
+    const today=now.getDate();
+    for(let i=0;i<first;i++){const b=document.createElement('div');b.className='day-chip blank';grid.appendChild(b);}
+    for(let d=1;d<=days;d++){
+      const c=document.createElement('button'); c.className='day-chip'; c.type='button'; c.textContent=d;
+      if(d<today){c.classList.add('past');c.disabled=true;}
+      if(d===today)c.classList.add('today');
+      if(!c.disabled)c.onclick=()=>toggleDate(d,c);
+      grid.appendChild(c);
     }
   }
-
-  function toggleDate(d, chip){
+  function toggleDate(d,chip){
     chip.classList.toggle('selected');
-    if (chip.classList.contains('selected')) {
-      state.dates.push(d);
-    } else {
-      state.dates = state.dates.filter(x => x !== d);
-    }
+    if(chip.classList.contains('selected'))state.dates.push(d); else state.dates=state.dates.filter(x=>x!==d);
     state.dates.sort((a,b)=>a-b);
-    document.getElementById('confirmDates').disabled = state.dates.length === 0;
+    const n=state.dates.length, note=document.getElementById('countNote');
+    note.innerHTML=n===0?'No days picked yet':`<b>${n}</b> day${n>1?'s':''} picked — nice`;
+    updateNext();
   }
-
-  function goLayer3(){
-    showLayer('layer3');
+  function pickTime(btn,label){
+    document.querySelectorAll('.time-chip').forEach(c=>c.classList.remove('selected'));
+    btn.classList.add('selected'); state.time=label; updateNext();
   }
+  function updateNext(){ document.getElementById('confirmDates').disabled=!(state.dates.length && state.time); }
+  function goLayer3(){ showLayer('layer3'); }
 
-  function pickPlan(btn, label){
-    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
-    btn.classList.add('selected');
-    state.plan = label;
-    document.getElementById('locationBlock').style.display = 'block';
-  }
-
-  function pickLocation(label){
-    state.location = label;
-    buildSummary();
-    showLayer('layer4');
-  }
-
-  function buildSummary(){
-    const dateList = state.dates.length
-      ? state.dates.map(d => `July ${d}, 2026`).join(', ')
-      : 'no dates picked';
-    const summary =
-`Free on: ${dateList}
-Plan: ${state.plan}
-Location: ${state.location}`;
-    document.getElementById('summaryBox').textContent = summary;
-  }
-
-  const FORMSPREE_ENDPOINT = "https://formspree.io/f/xgojbjyn";
-
-  function sendEmail(){
-    const dateList = state.dates.length
-      ? state.dates.map(d => `July ${d}, 2026`).join(', ')
-      : 'no dates picked';
-
-    const sendBtn = document.getElementById('sendBtn');
-    sendBtn.disabled = true;
-    sendBtn.textContent = 'Sending...';
-
-    fetch(FORMSPREE_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({
-        subject: "She said yes! Here's the plan 💌",
-        message:
-`Here's what was decided:
-
-Free on: ${dateList}
-Plan: ${state.plan}
-Location: ${state.location}
-
-Can't wait!`
-      })
-    })
-    .then(res => {
-      if (res.ok) {
-        showLayer('layer5');
-      } else {
-        sendBtn.disabled = false;
-        sendBtn.textContent = 'Send it to me 💌';
-        alert("Hmm, that didn't go through. Mind trying again?");
-      }
-    })
-    .catch(() => {
-      sendBtn.disabled = false;
-      sendBtn.textContent = 'Send it to me 💌';
-      alert("Hmm, that didn't go through. Mind trying again?");
+  function stars(r){ const full=Math.round(r); return '★'.repeat(full)+'☆'.repeat(5-full); }
+  function buildCafes(){
+    const list=document.getElementById('cafeList'); list.innerHTML='';
+    CAFES.forEach(c=>{
+      const card=document.createElement('button');
+      card.className='cafe-card'; card.type='button'; card.dataset.id=c.id;
+      card.onclick=()=>pickCafe(c,card);
+      card.innerHTML=`
+        <svg class="cafe-photo" viewBox="0 0 300 120" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">${c.art}</svg>
+        <div class="cafe-info">
+          <div class="cafe-top">
+            <div class="cafe-name">${c.name}</div>
+            <div class="cafe-rating">${stars(c.rating)} ${c.rating.toFixed(1)}</div>
+          </div>
+          <div class="cafe-addr"><span class="pin">📍</span><span>${c.addr}</span></div>
+          <span class="cafe-tag">${c.tag}</span>
+          <div class="cafe-actions">
+            <a class="maps-link" href="${c.maps}" target="_blank" rel="noopener" onclick="event.stopPropagation()">🗺️ View on Google Maps</a>
+            <span class="pick-flag">Tap to choose</span>
+          </div>
+        </div>`;
+      list.appendChild(card);
     });
   }
+  function pickCafe(c,card){
+    document.querySelectorAll('.cafe-card').forEach(x=>{ x.classList.remove('selected'); x.querySelector('.pick-flag').textContent='Tap to choose'; });
+    card.classList.add('selected'); state.cafe=c;
+    card.querySelector('.pick-flag').textContent='Chosen ✓';
+    buildTicket();
+    setTimeout(()=>showLayer('layer4'), 280);
+  }
+
+  function monthShort(){ return MONTH[calMonth].slice(0,3); }
+  function dateList(){ return state.dates.length ? state.dates.map(d=>`${monthShort()} ${d}`).join(', ') : '—'; }
+  function buildTicket(){
+    const c=state.cafe;
+    document.getElementById('ticketBody').innerHTML=`
+      <div class="t-row"><span class="t-ic">📅</span><div><div class="t-k">When you're free</div><div class="t-v">${dateList()}, ${calYear}</div></div></div>
+      <div class="t-row"><span class="t-ic">⏰</span><div><div class="t-k">Time of day</div><div class="t-v">${state.time||'—'}</div></div></div>
+      <div class="t-row"><span class="t-ic">📖</span><div><div class="t-k">The plan</div><div class="t-v">Study date ☕</div></div></div>
+      <div class="t-row"><span class="t-ic">☕</span><div><div class="t-k">Café</div><div class="t-v">${c?c.name:'—'}${c?` · ⭐ ${c.rating.toFixed(1)}`:''}</div></div></div>
+      <div class="t-row"><span class="t-ic">📍</span><div><div class="t-k">Address</div><div class="t-v">${c?c.addr:'—'}</div></div></div>`;
+  }
+
+  function buildGCalLink(){
+    const d=state.dates[0]||new Date().getDate(), pad=n=>String(n).padStart(2,'0');
+    const startH=state.time==='Morning'?10:state.time==='Afternoon'?14:18;
+    const y=calYear,m=pad(calMonth+1),day=pad(d);
+    const start=`${y}${m}${day}T${pad(startH)}0000`, end=`${y}${m}${day}T${pad(startH+2)}0000`;
+    const text=encodeURIComponent('Study date with Mai Hiền 💛');
+    const details=encodeURIComponent(`Study date at ${state.cafe?state.cafe.name:''}\nTime: ${state.time}`);
+    const loc=encodeURIComponent(state.cafe?state.cafe.name+', '+state.cafe.addr:'');
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${text}&dates=${start}/${end}&details=${details}&location=${loc}`;
+  }
+
+  function confettiBurst(){
+    const canvas=document.getElementById('confetti'), ctx=canvas.getContext('2d');
+    canvas.width=innerWidth; canvas.height=innerHeight;
+    const colors=['#C8494F','#7C8A5A','#C9A54E','#E7D3A2','#A2373C'];
+    const P=Array.from({length:120},()=>({x:innerWidth/2,y:innerHeight*0.4,vx:(Math.random()-0.5)*14,vy:(Math.random()*-14)-4,size:5+Math.random()*7,color:colors[(Math.random()*colors.length)|0],rot:Math.random()*6,vr:(Math.random()-0.5)*0.3,life:1}));
+    let f=0;(function a(){ctx.clearRect(0,0,canvas.width,canvas.height);
+      P.forEach(p=>{p.vy+=0.35;p.x+=p.vx;p.y+=p.vy;p.rot+=p.vr;p.life-=0.008;
+        ctx.save();ctx.translate(p.x,p.y);ctx.rotate(p.rot);ctx.globalAlpha=Math.max(p.life,0);
+        ctx.fillStyle=p.color;ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size*0.6);ctx.restore();});
+      f++; if(f<160)requestAnimationFrame(a); else ctx.clearRect(0,0,canvas.width,canvas.height);})();
+  }
+
+  const FORMSPREE_ENDPOINT="https://formspree.io/f/xgojbjyn";
+  function sendEmail(){
+    const note=document.getElementById('loveNote').value.trim();
+    const btn=document.getElementById('sendBtn'); btn.disabled=true; btn.textContent='Sending...';
+    const c=state.cafe;
+    const payload={ subject:"She said yes — study date! 📚💌",
+      message:`Here's what was decided:
+
+Free on: ${dateList()}, ${calYear}
+Time: ${state.time}
+Plan: Study date at a coffee shop
+Café: ${c?c.name+' (⭐ '+c.rating.toFixed(1)+')':'—'}
+Address: ${c?c.addr:'—'}
+Maps: ${c?c.maps:'—'}
+${note?'\nHer note: "'+note+'"':''}
+
+Can't wait!` };
+    fetch(FORMSPREE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(payload)})
+    .then(res=>{ if(res.ok){
+        document.getElementById('gcalLink').href=buildGCalLink();
+        document.getElementById('mapLink').href=c?c.maps:'#';
+        if(note)document.getElementById('finalLine').textContent='"'+note+'" — noted, and saved forever. See you soon 💛';
+        showLayer('layer5'); confettiBurst();
+      } else fail(btn); })
+    .catch(()=>fail(btn));
+  }
+  function fail(btn){ btn.disabled=false; btn.textContent='Send it to me 💌'; alert("Hmm, that didn't send. Mind trying once more?"); }
 </script>
 
 </body>
